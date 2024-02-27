@@ -15,7 +15,10 @@ return {
                     "tsserver",
                     "tailwindcss",
                     "elixirls",
-                    "tsserver"
+                    "tsserver",
+                    "htmx",
+                    "templ",
+                    "gopls"
                 },
             })
         end,
@@ -36,15 +39,30 @@ return {
             })
             lspconfig.elixirls.setup({
                 capabilities = capabilities,
+                cmd = {vim.fn.expand("~/.bin/elixir-ls/language_server.sh")};
             })
             lspconfig.tailwindcss.setup({
                 capabilities = capabilities,
+            })
+            lspconfig.templ.setup({
+                capabilities = capabilities,
+            })
+            lspconfig.htmx.setup({
+                capabilities = capabilities,
+                filetypes = {
+                    "html",
+                    "templ"
+                }
             })
             lspconfig.tsserver.setup({
                 capabilities = capabilities,
                 filetypes = {"typescript", "typescriptreact", "typescript.tsx"},
                 cmd = {"typescript-language-server", "--stdio"}
             })
+            lspconfig.gopls.setup({
+                capabilities = capabilities,
+            })
+ 
 
             vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
             vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})

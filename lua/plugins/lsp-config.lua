@@ -1,72 +1,80 @@
 return {
-    {
-        "williamboman/mason.nvim",
-        config = function()
-            require("mason").setup()
-        end,
-    },
-    {
-        "williamboman/mason-lspconfig.nvim",
-        config = function()
-            require("mason-lspconfig").setup({
-                ensure_installed = {
-                    "lua_ls",
-                    "rust_analyzer",
-                    "tsserver",
-                    "tailwindcss",
-                    "elixirls",
-                    "tsserver",
-                    "htmx",
-                    "templ",
-                    "gopls"
-                },
+	{
+		"williamboman/mason.nvim",
+		config = function()
+			require("mason").setup()
+		end,
+	},
+	{
+		"williamboman/mason-lspconfig.nvim",
+		config = function()
+			require("mason-lspconfig").setup({
+				ensure_installed = {
+					"lua_ls",
+					"rust_analyzer",
+					"tsserver",
+					"tailwindcss",
+					"elixirls",
+					"tsserver",
+					"htmx",
+					"templ",
+					"gopls",
+                    "eslint",
+                    "emmet_language_server"
+				},
+			})
+		end,
+	},
+	{
+		"neovim/nvim-lspconfig",
+		config = function()
+			local capabilities = require("cmp_nvim_lsp").default_capabilities()
+			local lspconfig = require("lspconfig")
+			lspconfig.lua_ls.setup({
+				capabilities = capabilities,
+			})
+			lspconfig.rust_analyzer.setup({
+				capabilities = capabilities,
+			})
+			lspconfig.tsserver.setup({
+				capabilities = capabilities,
+			})
+			lspconfig.elixirls.setup({
+				capabilities = capabilities,
+				cmd = { vim.fn.expand("~/.bin/elixir-ls/language_server.sh") },
+			})
+			lspconfig.tailwindcss.setup({
+				capabilities = capabilities,
+			})
+			lspconfig.templ.setup({
+				capabilities = capabilities,
+			})
+			lspconfig.htmx.setup({
+				capabilities = capabilities,
+				filetypes = {
+					"html",
+					"templ",
+				},
+			})
+			lspconfig.tsserver.setup({
+				capabilities = capabilities,
+				filetypes = { "typescript", "typescriptreact", "typescript.tsx" },
+				cmd = { "typescript-language-server", "--stdio" },
+			})
+			lspconfig.gopls.setup({
+				capabilities = capabilities,
+			})
+            lspconfig.emmet_language_server.setup({
+                filetypes = {"css", "html", "javascript", "javascriptreact", "typescript", "typescriptreact", "typescript.tsx"}
             })
-        end,
-    },
-    {
-        "neovim/nvim-lspconfig",
-        config = function()
-            local capabilities = require("cmp_nvim_lsp").default_capabilities()
-            local lspconfig = require("lspconfig")
-            lspconfig.lua_ls.setup({
-                capabilities = capabilities,
-            })
-            lspconfig.rust_analyzer.setup({
-                capabilities = capabilities,
-            })
-            lspconfig.tsserver.setup({
-                capabilities = capabilities,
-            })
-            lspconfig.elixirls.setup({
-                capabilities = capabilities,
-                cmd = {vim.fn.expand("~/.bin/elixir-ls/language_server.sh")};
-            })
-            lspconfig.tailwindcss.setup({
-                capabilities = capabilities,
-            })
-            lspconfig.templ.setup({
-                capabilities = capabilities,
-            })
-            lspconfig.htmx.setup({
-                capabilities = capabilities,
-                filetypes = {
-                    "html",
-                    "templ"
-                }
-            })
-            lspconfig.tsserver.setup({
-                capabilities = capabilities,
-                filetypes = {"typescript", "typescriptreact", "typescript.tsx"},
-                cmd = {"typescript-language-server", "--stdio"}
-            })
-            lspconfig.gopls.setup({
-                capabilities = capabilities,
-            })
- 
 
-            vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
-            vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
-            vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, {})
-        end,
-    },
+			vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
+			vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
+			vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, {})
+			vim.keymap.set("n", "<leader>sd", vim.diagnostic.open_float, opts)
+			vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, {})
+			vim.keymap.set({ "i", "n" }, "<C-s>", vim.lsp.buf.signature_help, opts)
+			vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+		end,
+	},
 }

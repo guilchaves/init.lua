@@ -19,8 +19,8 @@ return {
 					"htmx",
 					"templ",
 					"gopls",
-                    "eslint",
-                    "emmet_language_server"
+					"eslint",
+					"emmet_language_server",
 				},
 			})
 		end,
@@ -30,6 +30,20 @@ return {
 		config = function()
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 			local lspconfig = require("lspconfig")
+
+			local _border = "single"
+
+			vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+				border = _border,
+			})
+
+			vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+				border = _border,
+			})
+
+			vim.diagnostic.config({
+				float = { border = _border },
+			})
 			lspconfig.lua_ls.setup({
 				capabilities = capabilities,
 			})
@@ -64,9 +78,20 @@ return {
 			lspconfig.gopls.setup({
 				capabilities = capabilities,
 			})
-            lspconfig.emmet_language_server.setup({
-                filetypes = {"css", "html", "javascript", "javascriptreact", "typescript", "typescriptreact", "typescript.tsx"}
-            })
+			lspconfig.emmet_language_server.setup({
+				filetypes = {
+					"css",
+					"html",
+					"javascript",
+					"javascriptreact",
+					"typescript",
+					"typescriptreact",
+					"typescript.tsx",
+				},
+			})
+			lspconfig.ui.default_options = {
+				border = _border,
+			}
 
 			vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
 			vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})

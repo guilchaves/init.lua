@@ -14,5 +14,7 @@ return {
             exclude_filetypes = { "TelescopePrompt", "NvimTree" },
             log_file_path = nil,
         })
+
+        require("tabnine.status").status()
     end,
 }

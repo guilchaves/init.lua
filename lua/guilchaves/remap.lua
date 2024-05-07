@@ -12,6 +12,7 @@ vim.keymap.set("n", "N", "Nzzzv")
 
 -- navigate between windows
 vim.keymap.set("n", "ss", ":vsplit<CR><C-w>w, opts")
+vim.keymap.set("n", "vs", ":split<CR><C-w>w, opts")
 vim.keymap.set("n", "<C-H>", "<C-W>h")
 vim.keymap.set("n", "<C-J>", "<C-W>j")
 vim.keymap.set("n", "<C-K>", "<C-W>k")

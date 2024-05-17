@@ -3,7 +3,8 @@ return {
 	config = function()
 		require("lualine").setup({
 			options = {
-				theme = "base16",
+				theme = "iceberg_dark",
+                icons_enabled = true,
 			},
 			dependencies = { "nvim-tree/nvim-web-devicons" },
 		})

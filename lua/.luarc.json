@@ -2,6 +2,7 @@
     "diagnostics.globals": [
         "vim",
         "color",
-        "opts"
+        "opts",
+        "on_attach"
     ]
 }

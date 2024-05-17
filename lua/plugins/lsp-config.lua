@@ -1,5 +1,4 @@
 local keymap = vim.keymap
-local diagnostic = vim.diagnostic
 local lsp = vim.lsp
 local opts = { noremap = true, silent = true }
 
@@ -23,7 +22,6 @@ return {
 					"htmx",
 					"templ",
 					"gopls",
-					"eslint",
 					"emmet_language_server",
 					"angularls",
 				},
@@ -61,16 +59,24 @@ return {
 				cmd = { vim.fn.expand("~/.bin/elixir-ls/language_server.sh") },
 			})
 			lspconfig.tailwindcss.setup({
+				on_attach = on_attach,
 				capabilities = capabilities,
+				filetypes = { "templ", "javascript", "typescript", "typescriptreact", "javascriptreact" },
+				init_options = { userLanguages = { templ = "html" } },
 			})
 			lspconfig.templ.setup({
+				on_attach = on_attach,
 				capabilities = capabilities,
+                filetypes = {
+                    "html",
+                    "templ",
+                }
 			})
 			lspconfig.htmx.setup({
+				on_attach = on_attach,
 				capabilities = capabilities,
 				filetypes = {
 					"html",
-					"templ",
 				},
 			})
 			lspconfig.angularls.setup({
@@ -163,6 +169,21 @@ return {
 			keymap.set({ "n", "v" }, "<leader>ca", lsp.buf.code_action, {})
 			keymap.set({ "i", "n" }, "<C-s>", lsp.buf.signature_help, opts)
 			keymap.set("n", "<leader>rn", lsp.buf.rename, opts)
+
+			local templ_format = function()
+				local bufnr = vim.api.nvim_get_current_buf()
+				local filename = vim.api.nvim_buf_get_name(bufnr)
+				local cmd = "templ fmt " .. vim.fn.shellescape(filename)
+
+				vim.fn.jobstart(cmd, {
+					on_exit = function()
+						-- Reload the buffer only if it's still the current buffer
+						if vim.api.nvim_get_current_buf() == bufnr then
+							vim.cmd("e!")
+						end
+					end,
+				})
+			end
 		end,
 	},
 }

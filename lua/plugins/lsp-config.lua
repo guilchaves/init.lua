@@ -23,7 +23,6 @@ return {
 					"templ",
 					"gopls",
 					"emmet_language_server",
-					"angularls",
 				},
 			})
 		end,
@@ -79,19 +78,20 @@ return {
 					"html",
 				},
 			})
-			lspconfig.angularls.setup({
-				capabilities = capabilities,
-				cmd = {
-					"ngserver",
-					"--stdio",
-					"--tsProbeLocations",
-					project_library_path,
-					"--ngProbeLocations",
-					project_library_path,
-				},
-				filetypes = { "typescript", "html", "typescriptreact", "typescript.tsx" },
-			})
+            lspconfig.dartls.setup({
+                on_attach = on_attach,
+                capabilities = capabilities,
+                settings = {
+                    dart = {
+                        analysisExcludedFolders = { 
+                            vim.fn.expand("$HOME/AppData/Local/Pub/Cache"),
+                            vim.fn.expand("$HOME/.pub-cache"),
+                            vim.fn.expand("$HOME/tools/flutter/"),
+                        },
+                    },
+                },
 
+            })
 			lspconfig.tsserver.setup({
 				capabilities = capabilities,
 				filetypes = { "typescript", "typescriptreact", "typescript.tsx" },

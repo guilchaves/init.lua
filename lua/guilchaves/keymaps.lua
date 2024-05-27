@@ -17,8 +17,8 @@ keymap.set("n", "dw", "vb_d")
 keymap.set("n", "<C-a>", "gg<S-v>G")
 
 -- Move line up and down
-keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 
 -- Delete bottom line if empty
 keymap.set("n", "J", "mzJ`z")
@@ -50,10 +50,13 @@ keymap.set("n", "<C-w><left>", "<C-w><")
 keymap.set("n", "<C-w><right>", "<C-w>>")
 
 -- Diagnostics
-keymap.set("n", "<C-j>", function()
-	vim.diagnostic.goto_next()
-end, opts)
-keymap.set("n", "<leader>sd", diagnostic.open_float, opts)
+keymap.set("n", "<C-j>", diagnostic.goto_next, opts)
+keymap.set("n", "<C-k>", diagnostic.goto_prev, opts)
+keymap.set("n", "<leader>e", diagnostic.open_float, opts)
+keymap.set("n", "<leader>dl", diagnostic.setqflist, opts)
+
+-- Buffer
+keymap.set("i", "<C-h>", lsp.buf.signature_help, opts)
 
 -- Esc
 keymap.set("i", "<C-c>", "<Esc>")

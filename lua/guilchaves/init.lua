@@ -15,8 +15,8 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-vim.api.nvim_set_keymap("n", "<leader>q", ':lua require("guilchaves.macros").insert_quack_log()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<leader>p", ':lua require("guilchaves.macros").insert_quack_paragraph()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>cq", ':lua require("guilchaves.macros").insert_quack_log()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>q", ':lua require("guilchaves.macros").insert_quack()<CR>', { noremap = true, silent = true })
 
 require("lazy").setup("plugins")
 color = "kanagawa-wave"

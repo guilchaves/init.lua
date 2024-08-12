@@ -33,8 +33,29 @@ return {
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 			local lspconfig = require("lspconfig")
 			local util = require("lspconfig/util")
-
 			local _border = "single"
+			local ok, mason_registry = pcall(require, "mason-registry")
+			local project_library_path = mason_registry.get_package("angular-language-server"):get_install_path()
+
+			if not ok then
+				vim.notify("mason-registry could not be loaded")
+				return
+			end
+
+			local cmd = {
+				"ngserver",
+				"--stdio",
+				"--tsProbeLocations",
+				table.concat({
+					project_library_path,
+					vim.uv.cwd(),
+				}, ","),
+				"--ngProbeLocations",
+				table.concat({
+					project_library_path .. "/node_modules/@angular/language-server",
+					vim.uv.cwd(),
+				}, ","),
+			}
 
 			vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
 				border = _border,
@@ -66,10 +87,10 @@ return {
 			lspconfig.templ.setup({
 				on_attach = on_attach,
 				capabilities = capabilities,
-                filetypes = {
-                    "html",
-                    "templ",
-                }
+				filetypes = {
+					"html",
+					"templ",
+				},
 			})
 			lspconfig.htmx.setup({
 				on_attach = on_attach,
@@ -78,20 +99,26 @@ return {
 					"html",
 				},
 			})
-            lspconfig.dartls.setup({
-                on_attach = on_attach,
-                capabilities = capabilities,
-                settings = {
-                    dart = {
-                        analysisExcludedFolders = { 
-                            vim.fn.expand("$HOME/AppData/Local/Pub/Cache"),
-                            vim.fn.expand("$HOME/.pub-cache"),
-                            vim.fn.expand("$HOME/tools/flutter/"),
-                        },
-                    },
-                },
+			lspconfig.angularls.setup({
+				cmd = cmd,
+				on_new_config = function(new_config, new_root_dir)
+					new_config.cmd = cmd
+				end,
+			})
 
-            })
+			lspconfig.dartls.setup({
+				on_attach = on_attach,
+				capabilities = capabilities,
+				settings = {
+					dart = {
+						analysisExcludedFolders = {
+							vim.fn.expand("$HOME/AppData/Local/Pub/Cache"),
+							vim.fn.expand("$HOME/.pub-cache"),
+							vim.fn.expand("$HOME/tools/flutter/"),
+						},
+					},
+				},
+			})
 			lspconfig.tsserver.setup({
 				capabilities = capabilities,
 				filetypes = { "typescript", "typescriptreact", "typescript.tsx" },

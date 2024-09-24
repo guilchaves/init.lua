@@ -23,6 +23,7 @@ return {
 					"templ",
 					"gopls",
 					"emmet_language_server",
+					"volar",
 				},
 			})
 		end,
@@ -36,6 +37,9 @@ return {
 			local _border = "single"
 			local ok, mason_registry = pcall(require, "mason-registry")
 			local project_library_path = mason_registry.get_package("angular-language-server"):get_install_path()
+			local vue_typescript_plugin = mason_registry.get_package("vue-language-server"):get_install_path()
+				.. "/node_modules/@vue/language-server/"
+				.. "/node_modules/@vue/typescript-plugin/"
 
 			if not ok then
 				vim.notify("mason-registry could not be loaded")
@@ -81,7 +85,7 @@ return {
 			lspconfig.tailwindcss.setup({
 				on_attach = on_attach,
 				capabilities = capabilities,
-				filetypes = { "templ", "javascript", "typescript", "typescriptreact", "javascriptreact" },
+				filetypes = { "templ", "javascript", "typescript", "typescriptreact", "javascriptreact", "vue" },
 				init_options = { userLanguages = { templ = "html" } },
 			})
 			lspconfig.templ.setup({
@@ -98,6 +102,16 @@ return {
 				filetypes = {
 					"html",
 				},
+			})
+			lspconfig.volar.setup({
+				init_options = {
+					typescript = {
+						tsdk = "/home/guilherme/.local/share/nvm/v18.19.0/lib/node_modules/typescript/lib",
+					},
+				},
+				on_attach = on_attach,
+				capabilities = capabilities,
+				filetypes = { "javascript", "typescript", "vue" },
 			})
 			lspconfig.angularls.setup({
 				cmd = cmd,
@@ -120,8 +134,25 @@ return {
 				},
 			})
 			lspconfig.tsserver.setup({
+				init_options = {
+					plugins = {
+						{
+							name = "@vue/typescript-plugin",
+							location = vue_typescript_plugin,
+							languages = { "javascript", "typescript", "vue" },
+						},
+					},
+				},
 				capabilities = capabilities,
-				filetypes = { "typescript", "typescriptreact", "typescript.tsx" },
+				filetypes = {
+					"javascript",
+					"javascriptreact",
+					"javascript.jsx",
+					"typescript",
+					"typescriptreact",
+					"typescript.tsx",
+					"vue",
+				},
 				cmd = { "typescript-language-server", "--stdio" },
 				settings = {
 					completions = {
@@ -196,21 +227,6 @@ return {
 			keymap.set({ "n", "v" }, "<leader>ca", lsp.buf.code_action, {})
 			keymap.set({ "i", "n" }, "<C-s>", lsp.buf.signature_help, opts)
 			keymap.set("n", "<leader>rn", lsp.buf.rename, opts)
-
-			local templ_format = function()
-				local bufnr = vim.api.nvim_get_current_buf()
-				local filename = vim.api.nvim_buf_get_name(bufnr)
-				local cmd = "templ fmt " .. vim.fn.shellescape(filename)
-
-				vim.fn.jobstart(cmd, {
-					on_exit = function()
-						-- Reload the buffer only if it's still the current buffer
-						if vim.api.nvim_get_current_buf() == bufnr then
-							vim.cmd("e!")
-						end
-					end,
-				})
-			end
 		end,
 	},
 }

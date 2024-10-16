@@ -5,7 +5,15 @@ return {
 	config = function()
 		require("bufferline").setup({
 			options = {
-		            		offsets = { { filetype = "NvimTree", text = "", padding = 1 } },
+				offsets = {
+					{
+						filetype = "NvimTree",
+						text = "File Explorer",
+						padding = 1,
+						highlight = "Directory",
+						separator = true,
+					},
+				},
 				separator_style = "thin",
 			},
 		})
